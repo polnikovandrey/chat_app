@@ -22,9 +22,11 @@ class ChatScreen extends StatelessWidget {
         onPressed: () async {
           final firebaseApp = await Firebase.initializeApp();
           final firestore = FirebaseFirestore.instanceFor(app: firebaseApp);
-          final chatsCollectionSnapshot = await firestore.collection('chats').get();
-          final messagesCollectionSnapshot = await chatsCollectionSnapshot.docs.first.reference.collection('messages').get();
-          messagesCollectionSnapshot.docs.forEach((document) => print(document.data()['text']));
+          firestore.collection('chats/NoOL9MAmtXK7adMP4iMY/messages').snapshots().listen((data) {
+            data.docs.forEach((document) {
+              print(document.data()['text']);
+            });
+          });
         },
         child: const Icon(Icons.add),
       ),
