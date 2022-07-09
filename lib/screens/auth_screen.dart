@@ -37,8 +37,9 @@ class _AuthScreenState extends State<AuthScreen> {
         var user = userCredential.user;
         if (user != null && username != null && userImage != null) {
           final storageReference = FirebaseStorage.instance.ref().child('user_image').child('${user.uid}.jpg');
-          final uploadTask = await storageReference.putFile(userImage).whenComplete(() => {});
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username': username, 'email': email});
+          await storageReference.putFile(userImage).whenComplete(() => {});
+          final url = await storageReference.getDownloadURL();
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username': username, 'email': email, 'image_url': url});
         }
       }
     } on FirebaseAuthException catch(exception) {
