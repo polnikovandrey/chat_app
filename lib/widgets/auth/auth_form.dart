@@ -1,3 +1,4 @@
+import 'package:chat_app/widgets/pickers/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -35,6 +36,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!_isLogin) const UserImagePicker(),
                   TextFormField(
                     key: const ValueKey('email'),
                     validator: (value) => value == null || value.isEmpty || !value.contains('@') ? 'Please enter a valid email address.' : null,
@@ -58,14 +60,16 @@ class _AuthFormState extends State<AuthForm> {
                   ),
                   const SizedBox(height: 12),
                   if (widget._isLoading) const CircularProgressIndicator(),
-                  if (!widget._isLoading) ElevatedButton(
-                    onPressed: _trySubmit,
-                    child: _isLogin ? const Text('Login') : const Text('Signup'),
-                  ),
-                  if (!widget._isLoading) TextButton(
-                    onPressed: () => setState(() => _isLogin = !_isLogin),
-                    child: _isLogin ? const Text('Create New Account') : const Text('I have an account already'),
-                  ),
+                  if (!widget._isLoading)
+                    ElevatedButton(
+                      onPressed: _trySubmit,
+                      child: _isLogin ? const Text('Login') : const Text('Signup'),
+                    ),
+                  if (!widget._isLoading)
+                    TextButton(
+                      onPressed: () => setState(() => _isLogin = !_isLogin),
+                      child: _isLogin ? const Text('Create New Account') : const Text('I have an account already'),
+                    ),
                 ],
               ),
             ),
