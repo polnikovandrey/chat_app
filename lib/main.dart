@@ -1,6 +1,6 @@
-import 'package:chat_app/screens/chat_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:chat_app/screens/auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,7 @@ class ChatApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ChatScreen(),
+      home: const AuthScreen(),
     );
   }
 }
