@@ -18,13 +18,10 @@ class Messages extends StatelessWidget {
           return const Text('No Data');
         } else {
           var currentUser = FirebaseAuth.instance.currentUser;
-          var uid2 = currentUser?.uid;
           return ListView.builder(
             itemCount: data.docs.length,
             itemBuilder: (context, index) {
               final doc = data.docs[index];
-              var uid2 = currentUser?.uid;
-              var doc2 = doc['userId'];
               return MessageBubble(
                 username: doc['username'],
                 message: doc['text'],
