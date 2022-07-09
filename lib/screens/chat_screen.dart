@@ -20,9 +20,7 @@ class ChatScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final firebaseApp = await Firebase.initializeApp();
-          final firestore = FirebaseFirestore.instanceFor(app: firebaseApp);
-          firestore.collection('chats/NoOL9MAmtXK7adMP4iMY/messages').snapshots().listen((data) {
+          FirebaseFirestore.instance.collection('chats/NoOL9MAmtXK7adMP4iMY/messages').snapshots().listen((data) {
             data.docs.forEach((document) {
               print(document.data()['text']);
             });
