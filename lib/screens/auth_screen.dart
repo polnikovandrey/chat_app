@@ -1,6 +1,7 @@
 import 'package:chat_app/widgets/auth/auth_form.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -12,22 +13,28 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: AuthForm(_submitAuthForm),
+      body: AuthForm(_submitAuthForm, _isLoading),
     );
   }
 
   void _submitAuthForm({required BuildContext ctx, required String email, required String username, required String password, required bool isLogin}) async {
-    final userCredential;
+    setState(() => _isLoading = true);
+    final UserCredential userCredential;
     try {
       if (isLogin) {
         userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+        var user = userCredential.user;
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username': username, 'email': email});
+        }
       }
     } on FirebaseAuthException catch(exception) {
       _showSnackbarMessage(ctx, exception.message);
@@ -35,6 +42,8 @@ class _AuthScreenState extends State<AuthScreen> {
       _showSnackbarMessage(ctx, exception.message);
     } catch(exception) {
       print(exception);
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
