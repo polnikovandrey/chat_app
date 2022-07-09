@@ -1,5 +1,6 @@
 import 'package:chat_app/screens/auth_screen.dart';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/screens/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -8,26 +9,7 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  FirebaseMessaging.onMessage.listen((message) {
-    print(message.toMap());
-  });
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    print(message.toMap());
-  });
+  await _initFirebaseMessaging();
   runApp(const ChatApp());
 }
 
@@ -56,8 +38,37 @@ class ChatApp extends StatelessWidget {
       ),
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (ctx, userSnapshot) => userSnapshot.hasData ? const ChatScreen() : const AuthScreen(),
+        builder: (ctx, userSnapshot) {
+          return userSnapshot.connectionState == ConnectionState.waiting
+              ? const SplashScreen()
+              : userSnapshot.hasData
+                  ? const ChatScreen()
+                  : const AuthScreen();
+        },
       ),
     );
   }
+}
+
+Future<void> _initFirebaseMessaging() async {
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  FirebaseMessaging.onMessage.listen((message) {
+    print(message.toMap());
+  });
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    print(message.toMap());
+  });
 }

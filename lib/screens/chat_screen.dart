@@ -13,6 +13,7 @@ class ChatScreen extends StatelessWidget {
         title: const Text('Chat'),
         actions: [
           DropdownButton(
+            underline: Container(),
             icon: const Icon(Icons.more_vert),
             items: [
               DropdownMenuItem(
