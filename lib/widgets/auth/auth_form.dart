@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app/widgets/pickers/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,7 @@ class _AuthFormState extends State<AuthForm> {
   String _userName = '';
   String _userPassword = '';
   bool _isLogin = true;
+  File? _userImageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!_isLogin) const UserImagePicker(),
+                  if (!_isLogin) UserImagePicker(consumePickedImage: _consumeImage),
                   TextFormField(
                     key: const ValueKey('email'),
                     validator: (value) => value == null || value.isEmpty || !value.contains('@') ? 'Please enter a valid email address.' : null,
@@ -81,10 +84,19 @@ class _AuthFormState extends State<AuthForm> {
 
   void _trySubmit() {
     final formCurrentState = _formKey.currentState;
-    if (formCurrentState != null && formCurrentState.validate()) {
-      FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus();
+    if (_userImageFile == null && !_isLogin) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Please take an image'),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+    } else if (formCurrentState != null && formCurrentState.validate()) {
       formCurrentState.save();
       widget._submitAuthForm(ctx: context, email: _userEmail, username: _userName, password: _userPassword, isLogin: _isLogin);
     }
+  }
+
+  void _consumeImage(File image) {
+    _userImageFile = image;
   }
 }
