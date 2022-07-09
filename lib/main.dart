@@ -13,10 +13,23 @@ class ChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = ThemeData();
     return MaterialApp(
       title: 'Flutter Chat',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: themeData.copyWith(
+        colorScheme: themeData.colorScheme.copyWith(
+          primary: Colors.pink,
+          background: Colors.pink,
+          secondary: Colors.deepPurple,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.pink,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
       ),
       home: const AuthScreen(),
     );
