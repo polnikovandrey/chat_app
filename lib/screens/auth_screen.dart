@@ -13,7 +13,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: const AuthForm(),
+      body: AuthForm(_submitAuthForm),
     );
+  }
+
+  void _submitAuthForm({required String email, required String username, required String password, required bool isLogin}) {
+
   }
 }
