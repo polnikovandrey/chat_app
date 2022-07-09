@@ -11,21 +11,25 @@ class ChatScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Chat'),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (ctx, index) => Container(
-          padding: const EdgeInsets.all(8),
-          child: const Text('This works'),
-        ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('chats/NoOL9MAmtXK7adMP4iMY/messages').snapshots(),
+        builder: (ctx, streamSnapshot) {
+          var data = streamSnapshot.data;
+          if (data == null || !streamSnapshot.hasData) {
+            return const Text('No Data');
+          } else {
+            return ListView.builder(
+              itemCount: data.docs.length,
+              itemBuilder: (ctx, index) => Container(
+                padding: const EdgeInsets.all(8),
+                child: Text(data.docs[index]['text']),
+              ),
+            );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          FirebaseFirestore.instance.collection('chats/NoOL9MAmtXK7adMP4iMY/messages').snapshots().listen((data) {
-            data.docs.forEach((document) {
-              print(document.data()['text']);
-            });
-          });
-        },
+        onPressed: () {},
         child: const Icon(Icons.add),
       ),
     );
