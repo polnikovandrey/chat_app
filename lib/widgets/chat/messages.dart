@@ -24,6 +24,7 @@ class Messages extends StatelessWidget {
               final doc = data.docs[index];
               return MessageBubble(
                 username: doc['username'],
+                userImage: doc['userImage'],
                 message: doc['text'],
                 isMe: doc['userId'] == currentUser?.uid,
                 key: ValueKey(doc.id),
